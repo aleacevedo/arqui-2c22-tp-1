@@ -4,6 +4,14 @@ services:
     node:
         build: ./app
 
+    bbox:
+        image: arqsoft/bbox:202202.1
+        volumes:
+            - ./bbox.config.properties:/opt/bbox/config.properties
+        ports:
+            - "9090:9090"
+            - "9091:9091"
+
     nginx:
         image: nginx:1.23.1
         ports:
@@ -27,7 +35,7 @@ services:
     grafana:
         image: grafana/grafana:9.1.2
         ports:
-            - "80:3000"
+            - "2000:3000"
         volumes:
             - "grafana_config:/var/lib/grafana"
 
