@@ -6,9 +6,20 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
+app.get('/ping', (req, res) => {
+  res.send('pong');
+});
+
 // la idea era probar diferentes locations de ngnix y ver que esté todo funcionando bien. Esto es temporal.
-app.get('/bbox/x', (req, res) => {
-  return axios.get('http://bbox:9090')
+app.get('/bbox/a', (req, res) => {
+  return axios.get('http:/localhost/bbox/a')
+    .then(({ data }) => res.status(200).send(data))
+    .catch(err => res.status(500).send('Error no identificado'));
+});
+
+// la idea era probar diferentes locations de ngnix y ver que esté todo funcionando bien. Esto es temporal.
+app.get('/bbox/a', (req, res) => {
+  return axios.get('http:/localhost/bbox/a')
     .then(({ data }) => res.status(200).send(data))
     .catch(err => res.status(500).send('Error no identificado'));
 });
