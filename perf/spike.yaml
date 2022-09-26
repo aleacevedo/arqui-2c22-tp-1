@@ -1,0 +1,29 @@
+config:
+  environments:
+    node:
+      target: 'http://localhost:5555'
+      plugins:
+        statsd:
+          host: localhost
+          port: 8125
+          prefix: "artillery-node"
+
+  pool: 50 # All HTTP requests from all virtual users will be sent over the same connections
+
+# Spike load test
+  phases:
+    - name: Spike
+      duration: 15
+      arrivalRate: 5 # cantidad de usuarios virtuales iniciales
+      rampTo: 300 # hasta donde se incrementa el número de usuarios
+    - pause: 10
+    - name: Spike
+      duration: 15
+      arrivalRate: 40
+      rampTo: 600
+
+scenarios:
+  - name: Root (/)
+    flow:
+      - get:
+          url: '/'

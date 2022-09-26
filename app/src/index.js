@@ -2,11 +2,8 @@ const express = require('express');
 const axios = require('axios');
 const app = express();
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
-
 app.get('/ping', (req, res) => {
+  console.log('ping');
   res.send('pong');
 });
 
@@ -22,6 +19,11 @@ app.get('/bbox/a', (req, res) => {
   return axios.get('http:/localhost/bbox/a')
     .then(({ data }) => res.status(200).send(data))
     .catch(err => res.status(500).send('Error no identificado'));
+});
+
+app.get('/', (req, res) => {
+  console.log("New request");
+  res.send('Hola World!');
 });
 
 app.listen(3000, () => {
