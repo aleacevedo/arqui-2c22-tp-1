@@ -3,13 +3,18 @@ const axios = require('axios');
 const app = express();
 const {DateTime} = require('luxon');
 var StatsD = require('node-statsd'),
-      client = new StatsD();
+      client = new StatsD({host: 'graphite', port: 8125});
+
+client.socket.on('error', function(error) {
+  return console.error("Error in socket: ", error);
+});
 
 app.get('/ping', async (req, res) => {
   const start = DateTime.now();
   res.send('pong');
   const end = DateTime.now();
   const responseTime = end - start;
+  console.log(`Response time: ${responseTime} ms`);
   client.timing('response_time', responseTime);
 });
 
@@ -24,6 +29,7 @@ app.get('/bbox/a', async (req, res) => {
   }
   const end = DateTime.now();
   const responseTime = end - start;
+  console.log(`Response time: ${responseTime} ms`);
   client.timing('response_time', responseTime);
 });
 
@@ -38,6 +44,7 @@ app.get('/bbox/b', async (req, res) => {
   }
   const end = DateTime.now();
   const responseTime = end - start;
+  console.log(`Response time: ${responseTime} ms`);
   client.timing('response_time', responseTime);
 });
 

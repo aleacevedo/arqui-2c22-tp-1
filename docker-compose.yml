@@ -5,6 +5,7 @@ services:
         build: ./app
         links:
             - bbox
+            - graphite
         deploy:
             mode: replicated
             replicas: 4
