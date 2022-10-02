@@ -10,20 +10,12 @@ config:
 
   pool: 50 # All HTTP requests from all virtual users will be sent over the same connections
 
-# Spike load test
+# Load test
   phases:
-    - name: Flat
-      duration: 30
-      arrivalRate: 150
-    - name: Spike
-      duration: 30
-      arrivalRate: 1000
-    - name: Flat
-      duration: 30
-      arrivalRate: 150
-    - name: Spike
-      duration: 30
-      arrivalRate: 1000
+    - name: Ramp
+      duration: 300
+      arrivalRate: 0
+      rampTo: 1000
 
 scenarios:
   - name: Root (/)
