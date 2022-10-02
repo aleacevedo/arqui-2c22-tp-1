@@ -3,6 +3,8 @@ version: '2'
 services:
     node:
         build: ./app
+        links:
+            - bbox
         deploy:
             mode: replicated
             replicas: 4
@@ -11,6 +13,9 @@ services:
         image: arqsoft/bbox:202202.1
         volumes:
             - ./bbox.config.properties:/opt/bbox/config.properties
+        ports:
+            - "9090:9090"
+            - "9091:9091"
 
     nginx:
         image: nginx:1.23.1

@@ -17,10 +17,10 @@ app.get('/ping', async (req, res) => {
 app.get('/bbox/a', async (req, res) => {
   const start = DateTime.now();
   try{
-    const response = await axios.get('http:/localhost:5555/bbox/a/');
-    res.status(200).send(response);
+    const response = await axios.get('http://bbox:9090');
+    res.status(200).send(response.data);
   }catch(err){
-    res.status(500).send('Error no identificado')
+    res.status(500).send(err)
   }
   const end = DateTime.now();
   const responseTime = end - start;
@@ -31,8 +31,8 @@ app.get('/bbox/a', async (req, res) => {
 app.get('/bbox/b', async (req, res) => {
   const start = DateTime.now();
   try{
-    const response = await axios.get('http:/localhost:5555/bbox/b/')
-    res.status(200).send(response)
+    const response = await axios.get('http://bbox:9091')
+    res.status(200).send(response.data)
   }catch(err){
     res.status(500).send('Error no identificado')
   }
