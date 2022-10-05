@@ -1,6 +1,8 @@
+require('dotenv').config()
 const express = require('express');
 const axios = require('axios');
 const app = express();
+const apiRouter = require('./routers');
 
 app.get('/ping', (req, res) => {
   console.log('ping');
@@ -25,6 +27,10 @@ app.get('/', (req, res) => {
   console.log("New request");
   res.send('Hola World!');
 });
+
+app.use(express.json())
+
+app.use('/api', apiRouter);
 
 app.listen(3000, () => {
   console.log('Example app listening on port 3000!');
