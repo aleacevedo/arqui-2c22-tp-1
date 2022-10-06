@@ -1,11 +1,36 @@
 version: '2'
 
 services:
+    psql:
+        image: postgres:13
+        container_name: psql
+        environment:
+            POSTGRES_PASSWORD: ${PGPASSWORD}
+            POSTGRES_USER: ${PGUSER}
+
     node:
         build: ./app
+        image: arqui_tp1_server
         deploy:
             mode: replicated
             replicas: 4
+        environment:
+            PGUSER: ${PGUSER}
+            PGPASSWORD: ${PGPASSWORD}
+            PGHOST: psql
+            PGPORT: 5432
+            JWT_SECRET: ${JWT_SECRET}
+        depends_on:
+            - psql
+            - bbox
+            - migrations
+
+    migrations:
+        build: ./app
+        command: npm run migrations
+        depends_on:
+            - psql
+
 
     bbox:
         image: arqsoft/bbox:202202.1
