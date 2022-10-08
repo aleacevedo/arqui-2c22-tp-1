@@ -1,14 +1,49 @@
 version: '2'
 
 services:
+    psql:
+        image: postgres:13
+        container_name: psql
+        environment:
+            POSTGRES_PASSWORD: ${PGPASSWORD}
+            POSTGRES_USER: ${PGUSER}
+
     node:
         build: ./app
+        image: arqui_tp1_server
         links:
             - bbox
             - graphite
         deploy:
             mode: replicated
             replicas: 4
+        environment:
+            PGUSER: ${PGUSER}
+            PGPASSWORD: ${PGPASSWORD}
+            PGHOST: psql
+            PGPORT: 5432
+            JWT_SECRET: ${JWT_SECRET}
+        links:
+            - psql
+        depends_on:
+            - psql
+            - bbox
+            - migrations
+
+    migrations:
+        build: ./app
+        command: npm run migrations
+        environment:            
+            PGUSER: ${PGUSER}
+            PGPASSWORD: ${PGPASSWORD}            
+            PGHOST: psql
+            PGPORT: 5432
+            JWT_SECRET: ${JWT_SECRET}
+        links:
+            - psql
+        depends_on:
+            - psql
+
 
     bbox:
         image: arqsoft/bbox:202202.1
@@ -27,6 +62,7 @@ services:
             - ./store/static/files:/static:ro
         links:
             - node
+            - bbox
 
     graphite:
         image: graphiteapp/graphite-statsd:1.1.10-3

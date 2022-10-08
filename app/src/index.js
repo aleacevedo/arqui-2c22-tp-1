@@ -1,6 +1,8 @@
+require('dotenv').config()
 const express = require('express');
 const axios = require('axios');
 const app = express();
+const apiRouter = require('./routers');
 const { DateTime } = require('luxon');
 
 const lynx = require('lynx');
@@ -51,11 +53,16 @@ app.get('/bbox/b', async (req, res) => {
   }
 });
 
+
 app.get('/heavy', (req, res) => {
   for (var t = new Date(); new Date() - t < TIMEOUT;) { }
   sendMetric(req);
   res.status(200).send('heavy');
 });
+
+app.use(express.json())
+
+app.use('/api', apiRouter);
 
 app.listen(3000, () => {
   console.log('Service started on port 3000!');
