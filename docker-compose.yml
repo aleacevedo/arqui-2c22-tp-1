@@ -23,6 +23,8 @@ services:
             PGHOST: psql
             PGPORT: 5432
             JWT_SECRET: ${JWT_SECRET}
+        links:
+            - psql
         depends_on:
             - psql
             - bbox
@@ -31,6 +33,14 @@ services:
     migrations:
         build: ./app
         command: npm run migrations
+        environment:            
+            PGUSER: ${PGUSER}
+            PGPASSWORD: ${PGPASSWORD}            
+            PGHOST: psql
+            PGPORT: 5432
+            JWT_SECRET: ${JWT_SECRET}
+        links:
+            - psql
         depends_on:
             - psql
 
@@ -52,6 +62,7 @@ services:
             - ./store/static/files:/static:ro
         links:
             - node
+            - bbox
 
     graphite:
         image: graphiteapp/graphite-statsd:1.1.10-3

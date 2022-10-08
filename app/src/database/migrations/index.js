@@ -8,6 +8,8 @@ const createLogoutTable = require('./create-logout-table');
 
 const migrations = [createUsersTable, createCoursesTable, populateCourses, createLogoutTable];
 
+console.log('ENVS', process.env);
+
 const runMigrations = async () => {
     const client = new Pool()
     await client.connect()
