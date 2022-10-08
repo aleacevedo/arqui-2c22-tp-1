@@ -7,6 +7,11 @@ services:
         environment:
             POSTGRES_PASSWORD: ${PGPASSWORD}
             POSTGRES_USER: ${PGUSER}
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U postgres"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
 
     node:
         build: ./app
@@ -42,8 +47,9 @@ services:
         links:
             - psql
         depends_on:
-            - psql
-
+            psql:
+              condition: service_healthy
+              
 
     bbox:
         image: arqsoft/bbox:202202.1

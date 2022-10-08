@@ -1,0 +1,54 @@
+config:
+  environments:
+    node:
+      target: "http://localhost:5555/app/api"
+      phases:
+        - duration: 10
+          arrivalRate: 1
+          name: "Warm Up"
+  payload:
+    path: "./users.csv"
+    fields:
+      - "username"
+      - "password"
+  variables:
+    coursesIds:
+    - [6803, 6106, 6107] 
+    - [6803, 6106, 6107, 6108]
+    - [6803, 6106, 6107, 6108, 6110]
+    - [6803, 6106, 6107, 6108, 6110, 6803]
+
+
+scenarios:
+  - name: "Inscription to courses"
+    flow:
+    - log: "Using {{ username }}"
+    - post:
+        url: "/auth/login"
+        json:
+          username: "{{ username }}"
+          password: "{{ password }}"
+        capture:
+          - json: "$.token"
+            as: "userToken"
+    - log: "Get courses {{ loop_times }} times"
+    - loop:
+        - get:
+            url: "/courses"
+            headers:
+              authorization: "{{ userToken }}"
+            capture:
+              - json: "$"
+                as: "courses"
+        - log: "Enrolling to {{ $loopElement }}"
+	- get:
+            url: "/courses/enroll"
+            headers:
+              authorization: "{{ userToken }}"
+        - post:
+            url: "/courses/enroll"
+            headers:
+              authorization: "{{ userToken }}"
+            json:
+              courseId: {{ $loopElement }}
+      over: coursesIds  

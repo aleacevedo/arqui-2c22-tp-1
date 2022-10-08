@@ -18,6 +18,8 @@ exports.createUser = async (req, res) => {
 exports.login = async (req, res) => {
     try {
         const { username, password } = req.body;
+        console.log('body', req.body);
+        console.log('username andd pass', username, password);
         const tokenId = uuidV4()
         const result = await db.query(`SELECT * FROM users WHERE username = $1`, [username]);
         if (result.rows.length === 0) {
