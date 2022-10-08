@@ -3,12 +3,12 @@ const express = require('express');
 const axios = require('axios');
 const app = express();
 const apiRouter = require('./routers');
-const {DateTime} = require('luxon');
+const { DateTime } = require('luxon');
+const StatsD = require('node-statsd');
+const client = new StatsD({ host: 'graphite', port: 8125 });
+const TIMEOUT = 5000;
 
-var StatsD = require('node-statsd'),
-      client = new StatsD({host: 'graphite', port: 8125});
-
-client.socket.on('error', function(error) {
+client.socket.on('error', function (error) {
   return console.error("Error in socket: ", error);
 });
 
@@ -24,10 +24,10 @@ app.get('/ping', async (req, res) => {
 // la idea era probar diferentes locations de ngnix y ver que esté todo funcionando bien. Esto es temporal.
 app.get('/bbox/a', async (req, res) => {
   const start = DateTime.now();
-  try{
+  try {
     const response = await axios.get('http://bbox:9090');
     res.status(200).send(response.data);
-  }catch(err){
+  } catch (err) {
     res.status(500).send(err)
   }
   const end = DateTime.now();
@@ -39,16 +39,22 @@ app.get('/bbox/a', async (req, res) => {
 // la idea era probar diferentes locations de ngnix y ver que esté todo funcionando bien. Esto es temporal.
 app.get('/bbox/b', async (req, res) => {
   const start = DateTime.now();
-  try{
+  try {
     const response = await axios.get('http://bbox:9091')
     res.status(200).send(response.data)
-  }catch(err){
+  } catch (err) {
     res.status(500).send('Error no identificado')
   }
   const end = DateTime.now();
   const responseTime = end - start;
   console.log(`Response time: ${responseTime} ms`);
   client.timing('response_time', responseTime);
+});
+
+
+app.get('/heavy', (req, res) => {
+  for (var t = new Date(); new Date() - t < TIMEOUT;) { }
+  res.status(200).send('heavy');
 });
 
 app.use(express.json())
