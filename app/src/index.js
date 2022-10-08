@@ -2,55 +2,58 @@ const express = require('express');
 const axios = require('axios');
 const app = express();
 const { DateTime } = require('luxon');
-const StatsD = require('node-statsd');
-const client = new StatsD({ host: 'graphite', port: 8125 });
-const TIMEOUT = 5000;
 
-client.socket.on('error', function (error) {
-  return console.error("Error in socket: ", error);
+const lynx = require('lynx');
+var opt = {};
+opt.prefix = 'arqly';
+const metrics = new lynx('2c22-tp-1_graphite_1', 8125, opt);
+const TIMEOUT = 1000;
+
+app.use((req, res, next) => {
+  const start = DateTime.now();
+  req.custom = { start };
+  next();
 });
+
+const sendMetric = (req) => {
+  const end = DateTime.now();
+  const responseTime = end - req.custom.start;
+  metrics.timing('TimerApp.mwi', responseTime);
+}
 
 app.get('/ping', async (req, res) => {
-  const start = DateTime.now();
+  sendMetric(req);
   res.send('pong');
-  const end = DateTime.now();
-  const responseTime = end - start;
-  console.log(`Response time: ${responseTime} ms`);
-  client.timing('response_time', responseTime);
 });
+
 
 // la idea era probar diferentes locations de ngnix y ver que esté todo funcionando bien. Esto es temporal.
 app.get('/bbox/a', async (req, res) => {
-  const start = DateTime.now();
   try {
     const response = await axios.get('http://bbox:9090');
+    sendMetric(req);
     res.status(200).send(response.data);
   } catch (err) {
+    sendMetric(req);
     res.status(500).send(err)
   }
-  const end = DateTime.now();
-  const responseTime = end - start;
-  console.log(`Response time: ${responseTime} ms`);
-  client.timing('response_time', responseTime);
 });
 
 // la idea era probar diferentes locations de ngnix y ver que esté todo funcionando bien. Esto es temporal.
 app.get('/bbox/b', async (req, res) => {
-  const start = DateTime.now();
   try {
     const response = await axios.get('http://bbox:9091')
-    res.status(200).send(response.data)
+    sendMetric(req);
+    res.status(200).send(response.data);
   } catch (err) {
-    res.status(500).send('Error no identificado')
+    sendMetric(req);
+    res.status(500).send('Error no identificado');
   }
-  const end = DateTime.now();
-  const responseTime = end - start;
-  console.log(`Response time: ${responseTime} ms`);
-  client.timing('response_time', responseTime);
 });
 
 app.get('/heavy', (req, res) => {
   for (var t = new Date(); new Date() - t < TIMEOUT;) { }
+  sendMetric(req);
   res.status(200).send('heavy');
 });
 

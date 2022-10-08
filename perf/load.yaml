@@ -1,7 +1,14 @@
 config:
   environments:
     node:
-      target: 'http://localhost:5555/app'
+      target: "http://localhost:5555/app"
+      plugins:
+        statsd:
+          host: localhost
+          port: 8125
+          prefix: "artillery-node"
+    replicated:
+      target: "http://localhost:5555/replicated"
       plugins:
         statsd:
           host: localhost
@@ -10,15 +17,15 @@ config:
 
   pool: 50 # All HTTP requests from all virtual users will be sent over the same connections
 
-# Load test
+  # Load test
   phases:
     - name: Ramp
-      duration: 300
-      arrivalRate: 0
-      rampTo: 1000
+      duration: 180
+      arrivalRate: 1
+      rampTo: 10000
 
 scenarios:
   - name: Root (/)
     flow:
       - get:
-          url: '/'
+          url: '/ping'

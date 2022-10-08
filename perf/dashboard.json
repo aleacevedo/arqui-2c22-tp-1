@@ -341,6 +341,112 @@
       }
     },
     {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Graphite",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 14
+      },
+      "height": "250px",
+      "hiddenSeries": false,
+      "id": 6,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "hideEmpty": true,
+        "hideZero": false,
+        "max": true,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "sideWidth": 250,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "connected",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.3.10",
+      "pointradius": 5,
+      "points": true,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "refCount": 0,
+          "refId": "C",
+          "target": "alias(stats.timers.arqly.TimerApp.mwi.upper, 'Upper')"
+        },
+        {
+          "refCount": 0,
+          "refId": "B",
+          "target": "alias(stats.timers.arqly.TimerApp.mwi.median, 'Median')"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Response time (node)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "ms",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
       "aliasColors": {
         "Memory": "#EAB839"
       },
@@ -527,6 +633,11 @@
           },
           {
             "selected": false,
+            "text": "2c22-tp-1_node_4",
+            "value": "2c22-tp-1_node_4"
+          },
+          {
+            "selected": false,
             "text": "2c22-tp-1_cadvisor_1",
             "value": "2c22-tp-1_cadvisor_1"
           },
@@ -551,7 +662,7 @@
             "value": "2c22-tp-1_bbox_1"
           }
         ],
-        "query": "2c22-tp-1_node_1, 2c22-tp-1_node_2, 2c22-tp-1_node_3, 2c22-tp-1_cadvisor_1, 2c22-tp-1_grafana_1, 2c22-tp-1_graphite_1,  2c22-tp-1_nginx_1, 2c22-tp-1_bbox_1",
+        "query": "2c22-tp-1_node_1, 2c22-tp-1_node_2, 2c22-tp-1_node_3, 2c22-tp-1_node_4, 2c22-tp-1_cadvisor_1, 2c22-tp-1_grafana_1, 2c22-tp-1_graphite_1,  2c22-tp-1_nginx_1, 2c22-tp-1_bbox_1",
         "queryValue": "",
         "skipUrlSync": false,
         "type": "custom"

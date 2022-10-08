@@ -1,7 +1,14 @@
 config:
   environments:
     node:
-      target: 'http://localhost:5555/app'
+      target: "http://localhost:5555/app"
+      plugins:
+        statsd:
+          host: localhost
+          port: 8125
+          prefix: "artillery-node"
+    replicated:
+      target: "http://localhost:5555/replicated"
       plugins:
         statsd:
           host: localhost
@@ -10,23 +17,20 @@ config:
 
   pool: 50 # All HTTP requests from all virtual users will be sent over the same connections
 
-# Spike load test
+  # Spike load test
   phases:
-    - name: Flat
-      duration: 30
-      arrivalRate: 150
     - name: Spike
       duration: 30
-      arrivalRate: 1000
+      arrivalRate: 100
     - name: Flat
-      duration: 30
-      arrivalRate: 150
+      duration: 20
+      arrivalRate: 1
     - name: Spike
       duration: 30
-      arrivalRate: 1000
+      arrivalRate: 100
 
 scenarios:
   - name: Root (/)
     flow:
       - get:
-          url: '/'
+          url: "/bbox/b"
