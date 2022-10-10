@@ -7,13 +7,15 @@ services:
         environment:
             POSTGRES_PASSWORD: ${PGPASSWORD}
             POSTGRES_USER: ${PGUSER}
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U postgres"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
 
     node:
         build: ./app
         image: arqui_tp1_server
-        links:
-            - bbox
-            - graphite
         deploy:
             mode: replicated
             replicas: 4
@@ -24,6 +26,8 @@ services:
             PGPORT: 5432
             JWT_SECRET: ${JWT_SECRET}
         links:
+            - bbox
+            - graphite
             - psql
         depends_on:
             - psql
@@ -42,8 +46,9 @@ services:
         links:
             - psql
         depends_on:
-            - psql
-
+            psql:
+              condition: service_healthy
+              
 
     bbox:
         image: arqsoft/bbox:202202.1
