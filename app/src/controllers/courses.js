@@ -5,6 +5,7 @@ exports.getCourses = async (req, res) => {
         const result = await db.query('SELECT * FROM courses');
         return res.status(200).json({ courses: result.rows });
     } catch (err) {
+        console.error(err);
         return res.status(500).json({ error: err.message });
     }
 }
@@ -16,6 +17,7 @@ exports.getErolledCourses = async (req, res) => {
         const courses = await db.query('SELECT * FROM courses WHERE id = ANY($1::int[])', [enrolledCoursesId]);
         return res.status(200).json({ courses: courses.rows });
     } catch (err) {
+        console.error(err);
         return res.status(500).json({ error: err.message });
     }
 }
@@ -23,13 +25,16 @@ exports.getErolledCourses = async (req, res) => {
 exports.enrollCourse = async (req, res) => {
     try {
         const { courseId } = req.body;
+        console.log('Enroll course: ', courseId);
         const courses = await db.query('SELECT * FROM courses WHERE id = $1', [courseId]);
         if (courses.rowCount === 0) {
-            return res.send(404).json({ error: 'Course not found!'});
+            return res.status(404).json({ error: 'Course not found!' });
         }
         await db.query('INSERT INTO users_courses (user_id, course_id) VALUES ($1, $2)', [req.user.id, courseId]);
-        return res.status(201)
+        console.log('Course enrolled');
+        return res.status(201).send();
     } catch (err) {
+        console.error(err);
         return res.status(500).json({ error: err.message });
     }
 }
