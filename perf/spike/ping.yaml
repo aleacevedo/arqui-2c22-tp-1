@@ -1,0 +1,36 @@
+config:
+  environments:
+    node:
+      target: "http://localhost:5555/app"
+      plugins:
+        statsd:
+          host: localhost
+          port: 8125
+          prefix: "artillery-node"
+    replicated:
+      target: "http://localhost:5555/replicated"
+      plugins:
+        statsd:
+          host: localhost
+          port: 8125
+          prefix: "artillery-node"
+
+  pool: 50 # All HTTP requests from all virtual users will be sent over the same connections
+
+  # Spike load test
+  phases:
+    - name: Spike
+      duration: 30
+      arrivalRate: 1000
+    - name: Flat
+      duration: 20
+      arrivalRate: 1
+    - name: Spike
+      duration: 30
+      arrivalRate: 1000
+
+scenarios:
+  - name: Root (/)
+    flow:
+      - get:
+          url: "/ping"

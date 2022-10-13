@@ -19,10 +19,20 @@ config:
 
   # Load test
   phases:
-    - name: Ramp
-      duration: 180
-      arrivalRate: 1
-      rampTo: 10000
+    - name: init
+      duration: 10
+      arrivalRate: 4
+    - name: rampTo
+      duration: 90
+      arrivalRate: 12
+      rampTo: 120
+    - name: postRampTo
+      duration: 60
+      arrivalRate: 120
+    - name: finish
+      duration: 30
+      arrivalRate: 0
+
 
 scenarios:
   - name: Root (/)

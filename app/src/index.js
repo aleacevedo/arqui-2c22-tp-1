@@ -11,52 +11,52 @@ opt.prefix = 'arqly';
 const metrics = new lynx('2c22-tp-1_graphite_1', 8125, opt);
 const TIMEOUT = 1000;
 
-app.use((req, res, next) => {
-  const start = DateTime.now();
-  req.custom = { start };
-  next();
-});
+const startTimeToSaveMetric = () => {
+  return DateTime.now();
+}
 
-const sendMetric = (req) => {
+const sendMetric = (start) => {
   const end = DateTime.now();
-  const responseTime = end - req.custom.start;
+  const responseTime = end - start;
   metrics.timing('TimerApp.mwi', responseTime);
 }
 
 app.get('/ping', async (req, res) => {
-  sendMetric(req);
+  const start = startTimeToSaveMetric();
+
+  sendMetric(start);
   res.send('pong');
 });
 
-
-// la idea era probar diferentes locations de ngnix y ver que esté todo funcionando bien. Esto es temporal.
 app.get('/bbox/a', async (req, res) => {
+  const start = startTimeToSaveMetric();
   try {
     const response = await axios.get('http://bbox:9090');
-    sendMetric(req);
+    sendMetric(start);
     res.status(200).send(response.data);
   } catch (err) {
-    sendMetric(req);
+    sendMetric(start);
     res.status(500).send(err)
   }
 });
 
-// la idea era probar diferentes locations de ngnix y ver que esté todo funcionando bien. Esto es temporal.
 app.get('/bbox/b', async (req, res) => {
-  try {
-    const response = await axios.get('http://bbox:9091')
-    sendMetric(req);
-    res.status(200).send(response.data);
-  } catch (err) {
-    sendMetric(req);
-    res.status(500).send('Error no identificado');
-  }
+  const start = startTimeToSaveMetric();
+  return axios.get('http://bbox:9091')
+    .then(() => {
+      sendMetric(start);
+      res.status(200).send(response.data);
+    })
+    .catch(() => {
+      sendMetric(start);
+      res.status(500).send('Error no identificado');
+    });
 });
 
-
 app.get('/heavy', (req, res) => {
+  const start = startTimeToSaveMetric();
   for (var t = new Date(); new Date() - t < TIMEOUT;) { }
-  sendMetric(req);
+  sendMetric(start);
   res.status(200).send('heavy');
 });
 

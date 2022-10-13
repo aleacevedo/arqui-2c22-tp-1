@@ -77,7 +77,7 @@ services:
     grafana:
         image: grafana/grafana:9.1.2
         ports:
-            - "80:3000"
+            - "2000:3000"
         volumes:
             - "grafana_config:/var/lib/grafana"
 

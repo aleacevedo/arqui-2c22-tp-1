@@ -19,18 +19,22 @@ config:
 
   # Spike load test
   phases:
-    - name: Spike
+    - name: init
+      duration: 10
+      arrivalRate: 4
+    - name: rampTo
+      duration: 90
+      arrivalRate: 12
+      rampTo: 120
+    - name: postRampTo
+      duration: 60
+      arrivalRate: 120
+    - name: finish
       duration: 30
-      arrivalRate: 100
-    - name: Flat
-      duration: 20
-      arrivalRate: 1
-    - name: Spike
-      duration: 30
-      arrivalRate: 100
+      arrivalRate: 0
 
 scenarios:
   - name: Root (/)
     flow:
       - get:
-          url: "/bbox/b"
+          url: "/bbox/a"
